@@ -1,10 +1,12 @@
 package com.escalab.mediapp.service;
 
 import com.escalab.mediapp.entity.Paciente;
+import com.escalab.mediapp.exceptions.ModeloNotFoundException;
 import com.escalab.mediapp.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,11 @@ public class PacienteServiceImpl implements PacienteService {
     public Paciente findById(Integer id) {
         //ir a la base de datos y obtener el aciente por id (select * from paciente where id = {id})
         Optional<Paciente> pacienteO = pacienteRepository.findById(id);
-        return pacienteO.isPresent() ? pacienteO.get() : new Paciente();
+        if(pacienteO.isPresent()){
+            return pacienteO.get();
+        }else{
+            throw new ModeloNotFoundException("El paciente no existe o es nulo");
+        }
     }
 
     @Override
@@ -52,8 +58,20 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente update(Paciente paciente) {
+    public Paciente update(Paciente paciente, Integer id) {
+        Paciente p = new Paciente();
+        if(id != null && id > 0){
+            Optional<Paciente> po = pacienteRepository.findById(id);
+            if(po.isPresent()){
+                paciente.setId(id);
+                p = pacienteRepository.save(paciente);
+            }else{
+                throw new ModeloNotFoundException("El paciente no existe o es nulo");
+            }
+        }else{
+            //no se puede actualizar dado que el id es nulo o no existe
+        }
         //actualizar paciente (update paciente set nombre = {nombre}, ...)
-        return pacienteRepository.save(paciente);
+        return p;
     }
 }

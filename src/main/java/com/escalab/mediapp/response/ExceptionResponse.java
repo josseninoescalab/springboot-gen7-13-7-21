@@ -1,4 +1,4 @@
-package com.escalab.mediapp.exceptions;
+package com.escalab.mediapp.response;
 
 import java.time.LocalDateTime;
 
@@ -7,6 +7,12 @@ public class ExceptionResponse {
     private LocalDateTime timestamp;
     private String mensaje;
     private String detalles;
+
+    public ExceptionResponse(LocalDateTime timestamp, String mensaje, String detalles) {
+        this.timestamp = timestamp;
+        this.mensaje = mensaje;
+        this.detalles = detalles;
+    }
 
     public LocalDateTime getTimestamp() {
         return timestamp;

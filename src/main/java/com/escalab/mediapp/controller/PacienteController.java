@@ -1,7 +1,12 @@
 package com.escalab.mediapp.controller;
 
 import com.escalab.mediapp.entity.Paciente;
+import com.escalab.mediapp.exceptions.ModeloNotFoundException;
+import com.escalab.mediapp.response.ExceptionResponse;
 import com.escalab.mediapp.service.PacienteService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +28,15 @@ public class PacienteController {
     private PacienteService pacienteService;
 
     //localhost:8080/paciente
+    @ApiOperation(value = "Obtener todos los pacientes",
+            notes = "No necesita parametros de entrada",
+            response = List.class,
+            responseContainer = "Pacientes")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad request o datos no enviados correctamente", response = ExceptionResponse.class),
+            @ApiResponse(code = 404, message = "Not found, no encontrado", response = ExceptionResponse.class),
+            @ApiResponse(code = 405, message = "No se encontraron pacientes en la BD", response = ExceptionResponse.class),
+            @ApiResponse(code = 200, message = "Peticón OK", response = Paciente.class, responseContainer = "List")})
     @GetMapping
     public  @ResponseBody List<Paciente> findAll(){
         // retornar la lista de paciente
@@ -41,6 +55,9 @@ public class PacienteController {
     @GetMapping("/dni/{dni}/nombre/{nombre}")
     public  @ResponseBody Paciente findByDniAndNombre(@PathVariable("dni") String dni, @PathVariable("nombre") String nombre){
         // retornar un paciente por dni y por nombre
+        if(dni == null || "".equalsIgnoreCase(dni)){
+            throw new ModeloNotFoundException("No existe paciente o es nulo");
+        }
         return pacienteService.findByDniAndNombre(dni, nombre);
     }
 
@@ -59,10 +76,10 @@ public class PacienteController {
     }
 
     //localhost:8080/paciente
-    @PutMapping
-    public @ResponseBody Paciente update(@RequestBody Paciente paciente){
+    @PutMapping("/{id}")
+    public @ResponseBody Paciente update(@PathVariable("id") Integer id, @RequestBody Paciente paciente){
         // actualizar el paciente
-        return pacienteService.update(paciente);
+        return pacienteService.update(paciente, id);
     }
 
 }

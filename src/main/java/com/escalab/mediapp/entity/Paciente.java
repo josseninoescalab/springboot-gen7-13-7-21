@@ -1,5 +1,8 @@
 package com.escalab.mediapp.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "paciente")
+@ApiModel(description = "Información o propiedes del paciente")
 public class Paciente {
 
     @Id
@@ -18,6 +22,7 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
+    @ApiModelProperty(notes = "Nombre dene tener como máximo 70 caracteres")
     @Size(max = 70, message = "Solo se permiten 70 caracteres")
     @Column(name = "nombres", length = 70)
     private String nombres;
@@ -25,7 +30,8 @@ public class Paciente {
     @Column(name = "apellido", length = 70)
     private String apellidos;
 
-    @Size(min = 3, max = 9, message = "El Dni debe ser mayor a 2 digitos y menos a 10")
+    @ApiModelProperty(notes = "DNI dene tener como minimo 3 caracteres")
+    @Size(min = 3, max = 9, message = "El Dni debe ser mayor a 3 digitos y menos a 10")
     @Column(name = "dni", length = 30)
     private String dni;
 
