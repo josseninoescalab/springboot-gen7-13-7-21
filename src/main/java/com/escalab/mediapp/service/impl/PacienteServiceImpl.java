@@ -1,8 +1,9 @@
-package com.escalab.mediapp.service;
+package com.escalab.mediapp.service.impl;
 
 import com.escalab.mediapp.entity.Paciente;
 import com.escalab.mediapp.exceptions.ModeloNotFoundException;
 import com.escalab.mediapp.repository.PacienteRepository;
+import com.escalab.mediapp.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

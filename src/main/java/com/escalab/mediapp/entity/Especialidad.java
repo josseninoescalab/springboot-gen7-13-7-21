@@ -17,4 +17,20 @@ public class Especialidad {
 
     @Column(name = "nombre")
     private String nombre;
+
+    public Integer getIdEspecialidad() {
+        return idEspecialidad;
+    }
+
+    public void setIdEspecialidad(Integer idEspecialidad) {
+        this.idEspecialidad = idEspecialidad;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }
