@@ -32,11 +32,11 @@ public class EspecialidadServiceImpl implements EspecialidadService {
 	}
 	
 	@Override
-	public Especialidad findById(Integer id) throws Exception {
+	public Especialidad findById(Integer id)  {
 		Optional<Especialidad> op = especialidadRepository.findById(id);
-		if (!op.isPresent()) {
-			throw new Exception("ID NO ENCONTRADO" + id);
-		}
+//		if (!op.isPresent()) {
+//			throw new Exception("ID NO ENCONTRADO" + id);
+//		}
 		return op.get();
 	}
 	

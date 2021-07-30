@@ -31,11 +31,11 @@ public class ExamenServiceImpl implements ExamenService {
 	}
 	
 	@Override
-	public Examen findById(Integer id) throws Exception {
+	public Examen findById(Integer id)  {
 		Optional<Examen> op = examenRepository.findById(id);
-		if (!op.isPresent()) {
+		/*if (!op.isPresent()) {
 			throw new Exception("ID NO ENCONTRADO" + id);
-		}
+		}*/
 		return op.get();
 	}
 	

@@ -31,11 +31,11 @@ public class MedicoServiceImpl implements MedicoService {
 	}
 	
 	@Override
-	public Medico findById(Integer id) throws Exception {
+	public Medico findById(Integer id) {
 		Optional<Medico> op = medicoRepository.findById(id);
-		if (!op.isPresent()) {
+		/*if (!op.isPresent()) {
 			throw new Exception("ID NO ENCONTRADO" + id);
-		}
+		}*/
 		return op.get();
  	}
 	

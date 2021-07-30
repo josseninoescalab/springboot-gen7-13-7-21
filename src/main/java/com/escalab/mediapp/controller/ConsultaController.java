@@ -1,5 +1,11 @@
 package com.escalab.mediapp.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import com.escalab.mediapp.dto.ConsultaDTO;
+import com.escalab.mediapp.dto.ConsultaListaExamenDTO;
+import com.escalab.mediapp.dto.MedicoDTO;
 import com.escalab.mediapp.entity.Consulta;
 import com.escalab.mediapp.service.ArchivoService;
 import com.escalab.mediapp.service.ConsultaService;
@@ -9,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +46,7 @@ public class ConsultaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Consulta> listarPorId(@PathVariable("id") Integer id) throws Exception {
+	public ResponseEntity<Consulta> listarPorId(@PathVariable("id") Integer id) {
 		Consulta obj = service.findById(id);
 		return new ResponseEntity<Consulta>(obj, HttpStatus.OK);
 	}
@@ -65,5 +72,41 @@ public class ConsultaController {
 		return new ResponseEntity<byte[]>(arr, HttpStatus.OK);
 	}
 
+	@GetMapping("/dto")
+	public List<ConsultaDTO> findAllConsultas() throws Exception{
+		List<ConsultaDTO> reponse = new ArrayList<>();
+		List<Consulta> consultas = service.findAll();
+		consultas.forEach(consulta -> {
+			ConsultaDTO d = new ConsultaDTO();
+
+			//localhost:8080/paciente/39
+			ControllerLinkBuilder linkTo1 =
+					linkTo(methodOn(PacienteController.class).findById((consulta.getPaciente().getId())));
+			d.add(linkTo1.withSelfRel());
+			reponse.add(d);
+
+			//localhost:8080/	medico/48
+			ControllerLinkBuilder linkTo2 =
+					linkTo(methodOn(MedicoController.class).listarPorId((consulta.getMedico().getIdMedico())));
+			d.add(linkTo2.withSelfRel());
+			reponse.add(d);
+
+			ControllerLinkBuilder linkTo =
+					linkTo(methodOn(ConsultaController.class).listarPorId((consulta.getIdConsulta())));
+			d.add(linkTo.withSelfRel());
+			d.setIdConsulta(consulta.getIdConsulta());
+			reponse.add(d);
+		});
+		return reponse;
+	}
+
+	@PostMapping
+	public ResponseEntity<Object> registrar(@Valid @RequestBody ConsultaListaExamenDTO consultaDTO) {
+		Consulta obj = service.registrarTransaccional(consultaDTO);
+		//consultas/4
+		URI location =
+				ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getIdConsulta()).toUri();
+		return ResponseEntity.created(location).build();
+	}
 }
 

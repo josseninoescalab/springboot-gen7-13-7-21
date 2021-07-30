@@ -32,7 +32,7 @@ public class EspecialidadController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Especialidad> listarPorId(@PathVariable("id") Integer id) throws Exception {
+	public ResponseEntity<Especialidad> listarPorId(@PathVariable("id") Integer id) {
 		Especialidad obj = service.findById(id);
 		return new ResponseEntity<Especialidad>(obj, HttpStatus.OK);
 	}

@@ -34,7 +34,7 @@ public class MedicoController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Medico> listarPorId(@PathVariable("id") Integer id) throws Exception {
+	public ResponseEntity<Medico> listarPorId(@PathVariable("id") Integer id) {
 		Medico obj = service.findById(id);
 		return new ResponseEntity<Medico>(obj, HttpStatus.OK);
 	}
