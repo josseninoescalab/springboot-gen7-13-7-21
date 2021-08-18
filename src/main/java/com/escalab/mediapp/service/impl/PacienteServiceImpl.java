@@ -75,4 +75,9 @@ public class PacienteServiceImpl implements PacienteService {
         //actualizar paciente (update paciente set nombre = {nombre}, ...)
         return p;
     }
+
+    @Override
+    public void delete(Integer id) {
+        pacienteRepository.deleteById(id);
+    }
 }

@@ -2,8 +2,10 @@ package com.escalab.mediapp.service.impl;
 
 import com.escalab.mediapp.dto.ConsultaDTO;
 import com.escalab.mediapp.dto.ConsultaListaExamenDTO;
+import com.escalab.mediapp.dto.ConsultaResumenDTO;
 import com.escalab.mediapp.dto.MedicoDTO;
 import com.escalab.mediapp.dto.PacienteDTO;
+import com.escalab.mediapp.dto.PdfDTO;
 import com.escalab.mediapp.entity.Consulta;
 import com.escalab.mediapp.repository.ConsultaExamenRepository;
 import com.escalab.mediapp.repository.ConsultaRepository;
@@ -11,9 +13,17 @@ import com.escalab.mediapp.service.ConsultaService;
 import com.escalab.mediapp.service.EspecialidadService;
 import com.escalab.mediapp.service.MedicoService;
 import com.escalab.mediapp.service.PacienteService;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.UUID;
 import javax.transaction.Transactional;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -100,6 +110,41 @@ public class ConsultaServiceImpl implements ConsultaService {
 		dto.getExamenList().forEach(ex -> consultaExamenRepository.registrar(dto.getConsulta().getIdConsulta(),
 				ex.getIdExamen()));
 		return dto.getConsulta();
+	}
+
+	@Override
+	public List<ConsultaResumenDTO> listarResumen() {
+		List<ConsultaResumenDTO> consultas = new ArrayList<>();
+		consultaRepository.listarResumen().forEach(x -> {
+			ConsultaResumenDTO cr = new ConsultaResumenDTO();
+			cr.setCantidad(Integer.parseInt(String.valueOf(x[0])));
+			cr.setFecha(String.valueOf(x[1]));
+			consultas.add(cr);
+		});
+		return consultas;
+	}
+
+	@Override
+	public byte[] generarReporte() {
+		byte[] data = null;
+		try {
+			File file = new ClassPathResource("/reports/consultas.jasper").getFile();
+			JasperPrint print = JasperFillManager.fillReport(file.getPath(), null, new JRBeanCollectionDataSource(this.listarResumen()));
+			data = JasperExportManager.exportReportToPdf(print);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
+
+	@Override
+	public PdfDTO generarReportePDF() {
+		PdfDTO archivo = new PdfDTO();
+		UUID fileName = UUID.randomUUID();
+		byte[] report = this.generarReporte();
+		archivo.setDataFile(Base64.getEncoder().encodeToString(report));
+		archivo.setFileName(fileName + ".pdf");
+		return archivo;
 	}
 }
 

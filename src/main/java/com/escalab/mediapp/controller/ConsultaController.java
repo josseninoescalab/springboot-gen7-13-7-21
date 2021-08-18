@@ -5,7 +5,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import com.escalab.mediapp.dto.ConsultaDTO;
 import com.escalab.mediapp.dto.ConsultaListaExamenDTO;
+import com.escalab.mediapp.dto.ConsultaResumenDTO;
 import com.escalab.mediapp.dto.MedicoDTO;
+import com.escalab.mediapp.dto.PdfDTO;
 import com.escalab.mediapp.entity.Consulta;
 import com.escalab.mediapp.service.ArchivoService;
 import com.escalab.mediapp.service.ConsultaService;
@@ -107,6 +109,29 @@ public class ConsultaController {
 		URI location =
 				ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getIdConsulta()).toUri();
 		return ResponseEntity.created(location).build();
+	}
+
+	@GetMapping(value = "/listarResumen")
+	public ResponseEntity<List<ConsultaResumenDTO>>
+	listarResumen() {
+		List<ConsultaResumenDTO> consultas = new ArrayList<>();
+		consultas = service.listarResumen();
+		return new ResponseEntity<List<ConsultaResumenDTO>>(consultas, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/generarReporte", produces =
+			MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> generarReporte(){
+		byte[] data = null;
+		data = service.generarReporte();
+		return new ResponseEntity<byte[]>(data, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/generarReporte/pdf")
+	public ResponseEntity<PdfDTO> generarReportePDF(){
+		PdfDTO data = new PdfDTO();
+		data = service.generarReportePDF();
+		return new ResponseEntity<PdfDTO>(data, HttpStatus.OK);
 	}
 }
 

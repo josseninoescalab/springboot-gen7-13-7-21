@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,6 +83,13 @@ public class PacienteController {
     public @ResponseBody Paciente update(@PathVariable("id") Integer id, @RequestBody Paciente paciente){
         // actualizar el paciente
         return pacienteService.update(paciente, id);
+    }
+
+    //localhost:8080/paciente
+    @DeleteMapping("/{id}")
+    public @ResponseBody ResponseEntity<String> deleteById(@PathVariable("id") Integer id) throws Exception {
+        pacienteService.delete(id);
+        return new ResponseEntity<String>("Paciente eliminado correctamente", HttpStatus.OK);
     }
 
 }
