@@ -15,10 +15,6 @@ import com.escalab.mediappbackend.service.ConsultaService;
 import com.escalab.mediappbackend.service.EspecialidadService;
 import com.escalab.mediappbackend.service.MedicoService;
 import com.escalab.mediappbackend.service.PacienteService;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -127,10 +123,12 @@ public class ConsultaServiceImpl implements ConsultaService {
 		byte[] data = null;
 		try {
 			File file = new ClassPathResource("/reports/consultas.jasper").getFile();
-			JasperPrint print = JasperFillManager.fillReport(
+			/*JasperPrint print = JasperFillManager.fillReport(
 					file.getPath(), null,
 					new JRBeanCollectionDataSource(this.listarResumen()));
 			data = JasperExportManager.exportReportToPdf(print);
+			*/
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
